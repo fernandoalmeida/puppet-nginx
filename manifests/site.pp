@@ -1,6 +1,7 @@
 define nginx::site(
-  $server_name,
   $root,
+  $domain,
+  $aliases           = [],
   $listen            = 80,
   $default           = false,
 
@@ -15,7 +16,7 @@ define nginx::site(
 
   $error_page        = "404  /404.html",
 
-  $assets_regex      = "^.+\\.(jpg|jpeg|gif)\$",
+  $assets_regex      = "^.+\\.(jpe?g|gif|png|ico|js|css)\$",
   $assets_expires    = "30d",
   $assets_log        = "off",
 
@@ -26,15 +27,15 @@ define nginx::site(
   $enable            = true
   ) {
 
-  file {"nginx site ${server_name}":
+  file {"nginx site ${domain}":
     ensure  => file,
-    path    => "/etc/nginx/sites-available/${server_name}",
+    path    => "/etc/nginx/sites-available/${domain}",
     content => template("nginx/site.conf.erb"),
   }->
-  file {"nginx site ${server_name} enable":
+  file {"nginx site ${domain} enable":
     ensure  => link,
-    path    => "/etc/nginx/sites-enabled/${server_name}",
-    target  => "/etc/nginx/sites-available/${server_name}",
+    path    => "/etc/nginx/sites-enabled/${domain}",
+    target  => "/etc/nginx/sites-available/${domain}",
   }
   
 }

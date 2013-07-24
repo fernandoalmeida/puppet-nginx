@@ -1,20 +1,18 @@
 server {
   listen        <%= @listen %><%= !!@ssl ? " ssl" : "" %><%= !!@default ? " default_server" : "" %>;
-  server_name   <%= @server_name %>;
+  server_name   <%= @domain %><%= @aliases.size > 0 ? " #{@aliases.join(' ')}" : "" %>;
   root          <%= @root %>;
-
-  <% if !!@access_log %>
-  access_log   <%= @access_log %>;
-  <% end %>
- 
+<% if !!@access_log -%>
+  access_log    <%= @access_log %>;
+<% end %>
   location / {
   <% if !!@proxy_pass %>
     proxy_pass         <%= @proxy_pass %>;
     proxy_redirect     <%= @proxy_redirect %>;
     
-    <% @proxy_set_headers.each do |key, value| -%>
-    proxy_set_header   <%= key %> <%= value %>;
-    <% end -%>
+  <% @proxy_set_headers.each do |key, value| -%>
+  proxy_set_header   <%= key %> <%= value %>;
+  <% end -%>
   <% end -%>
  
     client_max_body_size       10m;
